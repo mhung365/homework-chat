@@ -10,6 +10,7 @@ coverage/
 .env
 .env.*
 !.env.example
+!.env.sample
 
 # Logs
 logs/
@@ -32,6 +33,15 @@ _bmad/
 _bmad-output/
 .agents/
 .claude/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Scraper output
+out/
 
 # Temporary files
 tmp/
