@@ -38,7 +38,12 @@ python main.py --simulate-update how-to-use-youtube-with-optisigns  # added 0, u
 
 ```bash
 docker build -t homework-chat .
-docker run --rm -e OPENAI_API_KEY=... -e VECTOR_STORE_ID=... homework-chat   # runs once, exits 0
+# runs once, exits 0
+docker run --rm \
+  -e OPENAI_API_KEY="$(grep OPENAI_API_KEY .env | cut -d= -f2)" \
+  -e VECTOR_STORE_ID="$(grep VECTOR_STORE_ID .env | cut -d= -f2)" \
+  homework-chat:local
+echo "exit code: $?"   
 ```
 
 ## Chunking strategy
@@ -62,23 +67,20 @@ Scheduler (`homework-chat-daily`, `rate(1 day)`). CloudWatch Logs are private to
 account, so run evidence is exported into the repo instead:
 
 - [logs/scheduled-run-2026-09-22.md](logs/scheduled-run-2026-09-22.md) — 6 runs triggered by
-  EventBridge Scheduler (`startedBy: chronos-schedule/homework-chat-daily`), all exit code 0.
-- [logs/manual-run-2026-09-22.md](logs/manual-run-2026-09-22.md) — first manual verification
-  run on the same task definition, exit code 0.
+EventBridge Scheduler (`startedBy: chronos-schedule/homework-chat-daily`), all exit code 0.
+- [logs/manual-run-2026-09-22.md](logs/manual-run-2026-09-22.md) — first manual verification  
+run on the same task definition, exit code 0.
 
 ## Sample answer
 
-Full output: [logs/sample-answer-2026-09-22.txt](logs/sample-answer-2026-09-22.txt)
-(`python ask.py "How do I add a YouTube video?"`).
-Screenshot: <!-- TODO: add logs/sample-answer-screenshot.png -->
+Full output: [logs/sample-answer-2026-09-22.txt](logs/sample-answer-2026-09-22.txt)  
+(`python ask.py "How do I add a YouTube video?"`).  
+Screenshot:  
+![Architecture](./images/Screenshot%202026-09-22%20at%2014.59.47.png)
 
 ## Known limitations
 
-- 40 scraped articles contain no `<pre>` code blocks, so the HTML→Markdown code-block path is
-  only exercised on a synthetic test case, not a live article.
-- The model does not always print the required `Article URL:` line itself even when
-  `file_search` finds a source; `ask.py` appends it from the response's real citations instead
-  of trusting the model's own text.
-- The model can occasionally answer from general knowledge on clearly out-of-scope questions,
-  despite "Only answer using the uploaded docs." in the system prompt (which is kept verbatim,
-  per the assignment, so this isn't patched with extra instructions).
+- **No automated tests yet.** I ran out of time to write a test suite; the pipeline was
+verified manually instead (local runs, the `--simulate-update` delta check, and the
+scheduled ECS runs linked above).
+
