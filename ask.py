@@ -1,4 +1,4 @@
-"""Ask OptiBot a question: Responses API + file_search over the vector store."""
+"""Ask the support assistant a question: Responses API + file_search over the vector store."""
 import os
 import sys
 from pathlib import Path
@@ -32,7 +32,7 @@ def cited_article_urls(client, response, vector_store_id):
 
 
 def ask(client, question, vector_store_id):
-    """Return OptiBot's answer text, with "Article URL:" lines appended from real citations.
+    """Return the assistant's answer text, with "Article URL:" lines appended from real citations.
 
     The system prompt asks the model to print "Article URL:" lines itself, but it does not
     always do so even when file_search finds a source (citations are carried as annotations,

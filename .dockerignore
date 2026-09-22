@@ -1,0 +1,7 @@
+.venv/
+articles/
+__pycache__/
+.env
+.git/
+_bmad/
+_bmad-output/
